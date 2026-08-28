@@ -57,6 +57,40 @@
     color: transparent;
   }
 
+  /* Shimmer sweep on the main headline: a bright cyan/white streak passes
+     left-to-right over the letters every few seconds. Implemented as a
+     text-shaped overlay (duplicated via attr()) blended on top of the
+     real heading, so it works over the mixed white/gradient text below
+     without altering its base colors. transform/opacity-free but only
+     touches background-position on a small text-sized layer, so it's
+     cheap — and it's inert (no layout/paint outside the glyph shapes). */
+  .shimmer-heading::after {
+    content: attr(data-shimmer-text);
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(100deg,
+      rgba(125,232,255,0) 30%,
+      rgba(47,211,238,.95) 42%,
+      #eafcff 48%,
+      rgba(47,211,238,.95) 54%,
+      rgba(125,232,255,0) 66%);
+    background-size: 220% 100%;
+    background-position: -120% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 10px rgba(125,232,255,.55));
+    animation: shimmer-sweep 6s ease-in-out infinite;
+    animation-delay: 1s;
+  }
+  @keyframes shimmer-sweep {
+    0%      { background-position: -120% 0; }
+    45%,
+    100%    { background-position: 120% 0; }
+  }
+
   @keyframes float-y {
     0%, 100% { transform: translateY(0); }
     50%      { transform: translateY(-10px); }
@@ -203,7 +237,8 @@
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .reveal, .reveal.will-animate { opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important; }
-    .bg-hero, .bg-porque, .float-slow, .float-rotate, .whatsapp-fab::before, .count-up, .marquee-track { animation: none !important; }
+    .bg-hero, .bg-porque, .float-slow, .float-rotate, .whatsapp-fab::before, .count-up, .marquee-track, .shimmer-heading::after { animation: none !important; }
+    .shimmer-heading::after { display: none; }
     .bg-hero { background-position: 0 0, 45% 35% !important; }
     .bg-porque { background-position: 0 0, 50% 40% !important; }
     .marquee-mask { overflow-x: auto; -webkit-mask-image: none; mask-image: none; -webkit-overflow-scrolling: touch; }
@@ -273,7 +308,8 @@
 
   <div class="relative max-w-6xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-12 items-center">
     <div class="reveal">
-      <h1 class="font-display text-4xl sm:text-5xl font-extrabold leading-[1.12] tracking-tight text-white">
+      <h1 class="shimmer-heading relative font-display text-4xl sm:text-5xl font-extrabold leading-[1.12] tracking-tight text-white"
+          data-shimmer-text="Sua empresa merece uma máquina que acompanha o seu negócio">
         Sua empresa merece uma máquina que <span class="text-gradient">acompanha o seu negócio</span>
       </h1>
       <p class="mt-5 text-lg text-cyan-50/85 max-w-lg">
