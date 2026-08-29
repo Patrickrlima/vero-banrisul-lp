@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vero Banrisul | Maquininha com taxa Banricompras de 0,99%</title>
-<meta name="description" content="Peça sua maquininha Vero Banrisul: sem custo de adesão, sem precisar ser correntista, integração com mais de 80 bancos e entrega em até 5 dias úteis. Fale agora com o promotor.">
+<meta name="description" content="Peça sua maquininha Vero Banrisul no CPF ou CNPJ: sem custo de adesão, sem precisar ser correntista, integração com mais de 80 bancos e entrega em até 5 dias úteis. Fale agora com o promotor.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
@@ -154,10 +154,15 @@
   .count-up { display: inline-block; }
   .count-suffix {
     display: inline-block;
-    opacity: 0; transform: scale(.6) translateY(4px);
-    transition: opacity .4s ease, transform .4s cubic-bezier(.34,1.56,.64,1);
+    opacity: 1; transform: scale(1) translateY(0);
   }
-  .count-suffix.is-visible { opacity: 1; transform: scale(1) translateY(0); }
+  .count-suffix.pop-in {
+    animation: suffix-pop-in .45s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes suffix-pop-in {
+    0%   { transform: scale(.6) translateY(4px); }
+    100% { transform: scale(1) translateY(0); }
+  }
   .count-pop { animation: count-pop .55s ease; }
   @keyframes count-pop {
     0%   { transform: scale(1); }
@@ -237,7 +242,7 @@
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .reveal, .reveal.will-animate { opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important; }
-    .bg-hero, .bg-porque, .float-slow, .float-rotate, .whatsapp-fab::before, .count-up, .marquee-track, .shimmer-heading::after { animation: none !important; }
+    .bg-hero, .bg-porque, .float-slow, .float-rotate, .whatsapp-fab::before, .count-up, .marquee-track, .shimmer-heading::after, .count-suffix.pop-in { animation: none !important; }
     .shimmer-heading::after { display: none; }
     .bg-hero { background-position: 0 0, 45% 35% !important; }
     .bg-porque { background-position: 0 0, 50% 40% !important; }
@@ -558,7 +563,7 @@
     <div class="reveal rounded-3xl bg-white p-8 sm:p-10 shadow-card flex flex-col justify-center">
       <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-ink tracking-tight">Por que escolher a <span class="text-blue">Vero</span>?</h2>
       <p class="mt-4 text-slate-500">
-        A solução ideal para o seu negócio: taxa de 0,99% no Banricompras, sem burocracia pra trocar de banco e sem call center genérico — só o suporte direto do seu promotor.
+        A solução ideal para o seu negócio: taxa de 0,99% no Banricompras, pedido no CPF ou no CNPJ, sem burocracia pra trocar de banco e sem call center genérico — só o suporte direto do seu promotor.
       </p>
       <div class="mt-8">
         <a href="https://wa.me/5551993913622?text=Ol%C3%A1!%20Quero%20saber%20mais%20sobre%20a%20m%C3%A1quina%20Vero%20Banrisul" target="_blank" rel="noopener"
@@ -600,6 +605,12 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1652C4" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5ZM15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-3.7"/></svg>
           </span>
           <p class="text-sm text-slate-600"><strong class="text-ink">Suporte</strong> personalizado</p>
+        </li>
+        <li class="flex items-center gap-4 py-3.5">
+          <span class="flex-none w-10 h-10 rounded-full bg-blue-pale flex items-center justify-center">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1652C4" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 3.75h6M5.625 4.5h12.75c.621 0 1.125.504 1.125 1.125v14.25c0 .621-.504 1.125-1.125 1.125H5.625A1.125 1.125 0 0 1 4.5 19.875V5.625c0-.621.504-1.125 1.125-1.125Zm4.125 4.125a1.125 1.125 0 1 1-2.25 0 1.125 1.125 0 0 1 2.25 0Z"/></svg>
+          </span>
+          <p class="text-sm text-slate-600"><strong class="text-ink">Pede</strong> no CPF ou no CNPJ</p>
         </li>
       </ul>
     </div>
@@ -719,6 +730,14 @@
           <svg class="flex-none transition-transform group-open:rotate-45" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1652C4" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
         </summary>
         <p class="mt-3 text-sm text-slate-500">Não. A Vero funciona mesmo se você não tiver conta no Banrisul.</p>
+      </details>
+
+      <details class="reveal card-hover group rounded-2xl border border-blue-pale bg-blue-paler px-5 py-4">
+        <summary class="focus-ring flex items-center justify-between cursor-pointer list-none font-medium text-ink">
+          Posso pedir no CPF ou só com CNPJ?
+          <svg class="flex-none transition-transform group-open:rotate-45" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1652C4" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        </summary>
+        <p class="mt-3 text-sm text-slate-500">Os dois. O pedido pode ser feito tanto no CPF (pessoa física) quanto no CNPJ (pessoa jurídica) — o promotor te orienta na melhor opção pro seu negócio.</p>
       </details>
 
       <details class="reveal card-hover group rounded-2xl border border-blue-pale bg-blue-paler px-5 py-4">
@@ -867,7 +886,6 @@
 
       if (reduce) {
         el.textContent = target.toFixed(decimals).replace('.', ',');
-        if (suffixEl) suffixEl.classList.add('is-visible');
         return;
       }
 
@@ -883,7 +901,7 @@
         } else {
           el.textContent = target.toFixed(decimals).replace('.', ',');
           el.classList.add('count-pop');
-          if (suffixEl) suffixEl.classList.add('is-visible');
+          if (suffixEl) suffixEl.classList.add('pop-in');
         }
       }
       window.requestAnimationFrame(frame);
