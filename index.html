@@ -269,6 +269,161 @@
     .marquee-track { transform: none !important; }
   }
 
+  /* ============ Simulação / lead → WhatsApp ============
+     Self-contained styles (lead-*) so they don't depend on Tailwind
+     utilities that aren't in the precompiled CSS above. Same tokens as
+     the rest of the page: deep #071A4D, ink #0B1F4D, blue #1652C4,
+     cyan #2FD3EE, whatsapp #25D366, Sora/Inter. */
+  .lead-cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
+  .lead-cta {
+    position: relative; isolation: isolate;
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    border-radius: .75rem; padding: 1rem 1.5rem;
+    background: #2FD3EE; color: #071A4D;
+    font-weight: 700; line-height: 1.25; text-decoration: none; cursor: pointer;
+    box-shadow: 0 10px 30px -10px rgba(47,211,238,.65);
+    transition: transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .25s ease, background-color .2s ease;
+  }
+  .lead-cta:hover { background: #67E8F9; transform: translateY(-2px) scale(1.03); box-shadow: 0 0 0 1px rgba(47,211,238,.6), 0 14px 36px -8px rgba(47,211,238,.7); }
+  .lead-cta:active { transform: translateY(0) scale(.98); }
+  .lead-cta svg { flex: none; }
+  /* Discreet pulse: a soft cyan halo that breathes outward. Compositor-only
+     (transform + opacity on a pseudo-element), stops after the visitor has
+     opened the form once. */
+  .lead-cta--pulse::after {
+    content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit;
+    background: #2FD3EE; opacity: 0; pointer-events: none;
+    animation: lead-pulse 2.8s cubic-bezier(.4,0,.2,1) infinite;
+  }
+  .lead-cta--pulse.is-seen::after { animation: none; }
+  @keyframes lead-pulse {
+    0%   { transform: scale(1);    opacity: .45; }
+    70%  { transform: scale(1.12, 1.35); opacity: 0; }
+    100% { transform: scale(1.12, 1.35); opacity: 0; }
+  }
+  .lead-cta--ghost {
+    background: rgba(255,255,255,.08); color: #fff;
+    border: 1px solid rgba(255,255,255,.3); box-shadow: none;
+    padding: .875rem 1.25rem;
+  }
+  .lead-cta--ghost:hover { background: rgba(255,255,255,.16); box-shadow: 0 0 0 1px rgba(47,211,238,.5); }
+  @media (max-width: 479px) {
+    .lead-cta-row > a { flex: 1 1 100%; }
+  }
+
+  /* Dialog: bottom sheet on phones, centered card from 640px up */
+  .lead-dialog {
+    padding: 0; border: 0; margin: auto auto 0; width: 100%; max-width: 100%;
+    max-height: 92vh; max-height: 92dvh;
+    border-radius: 1.5rem 1.5rem 0 0; background: #fff; color: #0B1F4D;
+    box-shadow: 0 -20px 60px -20px rgba(7,26,77,.45);
+    overflow: hidden;
+  }
+  .lead-dialog[open] { display: flex; flex-direction: column; animation: lead-sheet-in .38s cubic-bezier(.22,1,.36,1); }
+  .lead-dialog::backdrop { background: rgba(7,26,77,.62); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); animation: lead-fade-in .3s ease; }
+  @keyframes lead-sheet-in { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  @keyframes lead-card-in  { from { opacity: 0; transform: translateY(16px) scale(.97); } to { opacity: 1; transform: none; } }
+  @keyframes lead-fade-in  { from { opacity: 0; } to { opacity: 1; } }
+  @media (min-width: 640px) {
+    .lead-dialog { margin: auto; max-width: 30rem; max-height: 90vh; max-height: 90dvh; border-radius: 1.5rem; box-shadow: 0 30px 80px -25px rgba(7,26,77,.55); }
+    .lead-dialog[open] { animation-name: lead-card-in; }
+    .lead-handle { display: none; }
+  }
+  .lead-scroll { overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding: .75rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom)); }
+  @media (min-width: 640px) { .lead-scroll { padding: 1.75rem 2rem 2rem; } }
+  .lead-handle { width: 2.5rem; height: .3rem; border-radius: 9999px; background: #D5E2F7; margin: .25rem auto .75rem; }
+  .lead-head { position: relative; padding-right: 2.75rem; }
+  .lead-eyebrow { font-size: .7rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #1652C4; }
+  .lead-title { font-family: Sora, Inter, system-ui, sans-serif; font-weight: 800; font-size: 1.5rem; line-height: 1.2; letter-spacing: -.01em; margin-top: .35rem; color: #0B1F4D; }
+  .lead-sub { margin-top: .4rem; font-size: .9rem; color: #64748B; }
+  .lead-close {
+    position: absolute; top: -.25rem; right: -.5rem; width: 2.75rem; height: 2.75rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 9999px; color: #475569; background: transparent; border: 0; cursor: pointer;
+    transition: background-color .18s ease, color .18s ease;
+  }
+  .lead-close:hover { background: #EAF2FF; color: #0B1F4D; }
+
+  .lead-form { margin-top: 1.25rem; display: grid; gap: 1.1rem; }
+  .lead-form[hidden] { display: none; }
+  .lead-label, .lead-legend { display: block; font-size: .875rem; font-weight: 600; color: #0B1F4D; margin-bottom: .4rem; }
+  .lead-field { position: relative; }
+  .lead-input {
+    width: 100%; font: inherit; font-size: 16px; /* 16px = no iOS zoom on focus */
+    color: #0B1F4D; background: #F5F9FF;
+    border: 1.5px solid #D5E2F7; border-radius: .875rem;
+    padding: .85rem 2.75rem .85rem 1rem; min-height: 3.25rem;
+    transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+  }
+  .lead-input::placeholder { color: #94A3B8; }
+  .lead-input:hover { border-color: #B9CDF0; }
+  .lead-input:focus { outline: none; background: #fff; border-color: #2FD3EE; box-shadow: 0 0 0 4px rgba(47,211,238,.22); }
+  .lead-input[aria-invalid="true"] { border-color: #EF4444; background: #FFF7F7; }
+  .lead-input[aria-invalid="true"]:focus { box-shadow: 0 0 0 4px rgba(239,68,68,.18); }
+  .lead-input.is-valid { border-color: #25D366; }
+  .lead-ok {
+    position: absolute; right: .9rem; top: 50%; transform: translateY(-50%) scale(.6);
+    color: #16A34A; opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .25s cubic-bezier(.34,1.56,.64,1);
+  }
+  .lead-input.is-valid + .lead-ok { opacity: 1; transform: translateY(-50%) scale(1); }
+  .lead-error { display: flex; align-items: flex-start; gap: .35rem; margin-top: .4rem; font-size: .8rem; line-height: 1.35; color: #B91C1C; }
+  .lead-error[hidden] { display: none; }
+  .lead-error svg { flex: none; margin-top: .1rem; }
+
+  .lead-hint { display: none; margin-top: .45rem; padding: .25rem 0; border: 0; background: none; font: inherit; font-size: .78rem; color: #1652C4; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  @media (pointer: coarse) { .lead-hint { display: inline-block; } }
+  .lead-hint[hidden] { display: none; }
+  .lead-fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+  .lead-options { display: grid; grid-template-columns: 1fr; gap: .5rem; }
+  @media (min-width: 400px) {
+    .lead-options { grid-template-columns: 1fr 1fr; }
+    .lead-options > :last-child { grid-column: 1 / -1; }
+  }
+  .lead-option { position: relative; display: block; cursor: pointer; }
+  .lead-option input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+  .lead-option span {
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    min-height: 3rem; padding: .6rem .75rem; border-radius: .875rem;
+    font-size: .9rem; font-weight: 600; color: #0B1F4D;
+    background: #F5F9FF; border: 1.5px solid #D5E2F7;
+    transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease, transform .18s ease, color .18s ease;
+  }
+  .lead-option:hover span { border-color: #B9CDF0; }
+  .lead-option input:focus-visible + span { box-shadow: 0 0 0 4px rgba(47,211,238,.3); border-color: #2FD3EE; }
+  .lead-option input:checked + span {
+    background: #071A4D; border-color: #071A4D; color: #fff;
+    box-shadow: 0 10px 24px -14px rgba(7,26,77,.8), inset 0 0 0 1px rgba(47,211,238,.45);
+  }
+  .lead-option input:active + span { transform: scale(.98); }
+  .lead-fieldset[aria-invalid="true"] .lead-option span { border-color: #FCA5A5; }
+
+  .lead-submit {
+    width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: .55rem;
+    min-height: 3.5rem; margin-top: .25rem; padding: .9rem 1.25rem; border: 0; border-radius: .875rem;
+    background: #25D366; color: #fff; font: inherit; font-size: 1rem; font-weight: 700; cursor: pointer;
+    box-shadow: 0 12px 28px -12px rgba(37,211,102,.7);
+    transition: transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .25s ease, background-color .2s ease;
+  }
+  .lead-submit:hover { background: #1fb855; transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(37,211,102,.5), 0 14px 34px -10px rgba(37,211,102,.6); }
+  .lead-submit:active { transform: scale(.98); }
+  .lead-submit:focus-visible, .lead-close:focus-visible, .lead-cta:focus-visible, .lead-link:focus-visible { outline: 2px solid #2FD3EE; outline-offset: 3px; }
+  .lead-privacy { font-size: .75rem; line-height: 1.45; color: #64748B; text-align: center; text-wrap: balance; }
+  .lead-privacy svg { display: inline; vertical-align: -2px; margin-right: .25rem; }
+
+  .lead-done .lead-title:focus { outline: none; }
+  .lead-done { text-align: center; padding: .5rem 0 .25rem; }
+  .lead-done[hidden] { display: none; }
+  .lead-done-icon { width: 3.5rem; height: 3.5rem; margin: 0 auto; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: #E8FBF0; color: #16A34A; }
+  .lead-link { color: #1652C4; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+  .lead-secondary { margin-top: .9rem; width: 100%; min-height: 3rem; border-radius: .875rem; border: 1.5px solid #D5E2F7; background: #fff; color: #0B1F4D; font: inherit; font-weight: 600; cursor: pointer; }
+  .lead-secondary:hover { background: #F5F9FF; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lead-cta--pulse::after { animation: none !important; display: none; }
+    .lead-dialog[open], .lead-dialog::backdrop { animation: none !important; }
+    .lead-cta, .lead-submit, .lead-option span, .lead-ok { transition: none !important; }
+  }
+
   ::selection { background: #2FD3EE; color: #071A4D; }
   .focus-ring:focus-visible { outline: 2px solid #2FD3EE; outline-offset: 3px; border-radius: 8px; }
 
@@ -346,11 +501,19 @@
         <p class="font-display rate-glow text-6xl sm:text-7xl font-extrabold leading-none mt-1"><span class="count-up" data-target="0.99" data-decimals="2">0,00</span><span class="count-suffix"><span class="text-3xl align-top">%</span><span class="text-lg align-top">*</span></span></p>
         <p class="mt-2 text-xs text-cyan-100/70">*Taxa válida nos 3 primeiros meses a partir da contratação.</p>
 
+        <div class="mt-5 lead-cta-row">
+        <!-- Abre o formulário de simulação. Sem JS, cai no link normal do WhatsApp. -->
         <a href="https://wa.me/5551993913622?text=Ol%C3%A1!%20Quero%20saber%20mais%20sobre%20a%20m%C3%A1quina%20Vero%20Banrisul" target="_blank" rel="noopener"
-           class="focus-ring mt-5 inline-flex items-center gap-2 rounded-xl bg-whatsapp text-white font-semibold px-6 py-4 cursor-pointer">
+           data-lead-open aria-haspopup="dialog" class="lead-cta lead-cta--pulse">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V13.5Zm0 2.25h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V18Zm2.498-6.75h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V13.5Zm0 2.25h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V18Zm2.504-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V18Zm2.498-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5ZM8.25 6h7.5v2.25h-7.5V6ZM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 0 0 2.25 2.25h10.5a2.25 2.25 0 0 0 2.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0 0 12 2.25Z"/></svg>
+          Quero saber minha taxa
+        </a>
+        <a href="https://wa.me/5551993913622?text=Ol%C3%A1!%20Quero%20saber%20mais%20sobre%20a%20m%C3%A1quina%20Vero%20Banrisul" target="_blank" rel="noopener"
+           class="focus-ring inline-flex items-center justify-center gap-2 rounded-xl bg-whatsapp text-white font-semibold px-6 py-4 cursor-pointer">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.33 4.95L2 22l5.29-1.39a9.9 9.9 0 0 0 4.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2Zm5.8 14.02c-.24.68-1.4 1.3-1.94 1.38-.5.08-1.12.11-1.8-.11-.42-.13-.96-.31-1.65-.6-2.9-1.25-4.8-4.16-4.94-4.35-.14-.19-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.41.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.66.5.24.58.83 2 .9 2.14.07.14.12.31.02.5-.1.19-.15.31-.29.48-.14.17-.3.37-.43.5-.14.14-.29.29-.13.57.17.29.75 1.24 1.61 2.01 1.11.99 2.04 1.3 2.33 1.44.29.14.46.12.63-.07.17-.19.72-.84.92-1.13.19-.29.38-.24.64-.14.26.1 1.66.79 1.94.93.29.14.48.21.55.33.07.12.07.68-.17 1.36Z"/></svg>
           Quero minha Vero no WhatsApp
         </a>
+        </div>
       </div>
 
       <dl class="mt-10 grid grid-cols-3 gap-4 max-w-lg border-t border-white/15 pt-6">
@@ -860,6 +1023,11 @@
             <svg width="20" height="20" class="flex-none" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.33 4.95L2 22l5.29-1.39a9.9 9.9 0 0 0 4.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2Zm5.8 14.02c-.24.68-1.4 1.3-1.94 1.38-.5.08-1.12.11-1.8-.11-.42-.13-.96-.31-1.65-.6-2.9-1.25-4.8-4.16-4.94-4.35-.14-.19-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.41.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.66.5.24.58.83 2 .9 2.14.07.14.12.31.02.5-.1.19-.15.31-.29.48-.14.17-.3.37-.43.5-.14.14-.29.29-.13.57.17.29.75 1.24 1.61 2.01 1.11.99 2.04 1.3 2.33 1.44.29.14.46.12.63-.07.17-.19.72-.84.92-1.13.19-.29.38-.24.64-.14.26.1 1.66.79 1.94.93.29.14.48.21.55.33.07.12.07.68-.17 1.36Z"/></svg>
             <span>Falar com o promotor no WhatsApp</span>
           </a>
+          <a href="https://wa.me/5551993913622?text=Ol%C3%A1!%20Quero%20saber%20mais%20sobre%20a%20m%C3%A1quina%20Vero%20Banrisul" target="_blank" rel="noopener"
+             data-lead-open aria-haspopup="dialog" class="lead-cta lead-cta--ghost max-w-full">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/></svg>
+            <span>Faça uma simulação</span>
+          </a>
           <span class="text-xs text-cyan-100/70">Atendimento rápido e personalizado</span>
         </div>
       </div>
@@ -884,6 +1052,78 @@
     <p class="text-xs text-cyan-100/50">Página de divulgação independente do promotor Vero Banrisul.</p>
   </div>
 </footer>
+
+<!-- SIMULAÇÃO → WHATSAPP (abre pelos botões com data-lead-open) -->
+<dialog id="lead-dialog" class="lead-dialog" aria-labelledby="lead-title" aria-describedby="lead-sub">
+  <div class="lead-scroll">
+    <div class="lead-handle" aria-hidden="true"></div>
+
+    <div class="lead-head">
+      <p class="lead-eyebrow">Simulação gratuita</p>
+      <h2 id="lead-title" class="lead-title">Descubra sua taxa</h2>
+      <p id="lead-sub" class="lead-sub">Leva menos de 1 minuto. O promotor Jaime Eduardo responde direto no WhatsApp.</p>
+      <button type="button" class="lead-close" data-lead-close aria-label="Fechar">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <form id="lead-form" class="lead-form" method="dialog" novalidate autocomplete="on">
+      <div>
+        <label for="lead-nome" class="lead-label">Seu nome</label>
+        <div class="lead-field">
+          <input id="lead-nome" name="nome" type="text" class="lead-input" placeholder="Digite seu nome"
+                 autocomplete="name" autocapitalize="words" enterkeyhint="next" maxlength="80" required
+                 aria-describedby="lead-nome-erro">
+          <svg class="lead-ok" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+        </div>
+        <p id="lead-nome-erro" class="lead-error" role="alert" hidden></p>
+      </div>
+
+      <div>
+        <label for="lead-doc" class="lead-label">CPF ou CNPJ</label>
+        <div class="lead-field">
+          <input id="lead-doc" name="documento" type="text" inputmode="numeric" class="lead-input" placeholder="Digite seu CPF ou CNPJ"
+                 autocomplete="off" enterkeyhint="next" maxlength="18" required spellcheck="false"
+                 aria-describedby="lead-doc-erro">
+          <svg class="lead-ok" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+        </div>
+        <p id="lead-doc-erro" class="lead-error" role="alert" hidden></p>
+        <button type="button" id="lead-doc-letras" class="lead-hint">CNPJ novo, com letras? Usar teclado completo</button>
+      </div>
+
+      <fieldset id="lead-fat" class="lead-fieldset" aria-describedby="lead-fat-erro">
+        <legend class="lead-legend">Qual é o seu faturamento médio mensal?</legend>
+        <div class="lead-options">
+          <label class="lead-option"><input type="radio" name="faturamento" value="Até R$ 3 mil" required><span>Até R$ 3 mil</span></label>
+          <label class="lead-option"><input type="radio" name="faturamento" value="R$ 3 mil a R$ 10 mil"><span>R$ 3 mil a R$ 10 mil</span></label>
+          <label class="lead-option"><input type="radio" name="faturamento" value="R$ 10 mil a R$ 20 mil"><span>R$ 10 mil a R$ 20 mil</span></label>
+          <label class="lead-option"><input type="radio" name="faturamento" value="R$ 20 mil a R$ 50 mil"><span>R$ 20 mil a R$ 50 mil</span></label>
+          <label class="lead-option"><input type="radio" name="faturamento" value="Acima de R$ 50 mil"><span>Acima de R$ 50 mil</span></label>
+        </div>
+        <p id="lead-fat-erro" class="lead-error" role="alert" hidden></p>
+      </fieldset>
+
+      <button type="submit" class="lead-submit">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.33 4.95L2 22l5.29-1.39a9.9 9.9 0 0 0 4.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2Zm5.8 14.02c-.24.68-1.4 1.3-1.94 1.38-.5.08-1.12.11-1.8-.11-.42-.13-.96-.31-1.65-.6-2.9-1.25-4.8-4.16-4.94-4.35-.14-.19-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.41.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.66.5.24.58.83 2 .9 2.14.07.14.12.31.02.5-.1.19-.15.31-.29.48-.14.17-.3.37-.43.5-.14.14-.29.29-.13.57.17.29.75 1.24 1.61 2.01 1.11.99 2.04 1.3 2.33 1.44.29.14.46.12.63-.07.17-.19.72-.84.92-1.13.19-.29.38-.24.64-.14.26.1 1.66.79 1.94.93.29.14.48.21.55.33.07.12.07.68-.17 1.36Z"/></svg>
+        Continuar pelo WhatsApp
+      </button>
+
+      <p class="lead-privacy">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
+        <span>Seus dados não ficam salvos neste site — servem só para montar sua mensagem no WhatsApp.</span>
+      </p>
+    </form>
+
+    <div id="lead-done" class="lead-done" hidden>
+      <div class="lead-done-icon" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+      </div>
+      <p class="lead-title" style="font-size:1.25rem;margin-top:.9rem" tabindex="-1" id="lead-done-title">Abrindo o WhatsApp…</p>
+      <p class="lead-sub">Sua mensagem já vai pronta — é só tocar em enviar.<br>Se o WhatsApp não abrir, <a id="lead-done-link" class="lead-link" href="#" target="_blank" rel="noopener">toque aqui</a>.</p>
+      <button type="button" class="lead-secondary" data-lead-close>Fechar</button>
+    </div>
+  </div>
+</dialog>
 
 <!-- WHATSAPP FLUTUANTE -->
 <a href="https://wa.me/5551993913622?text=Ol%C3%A1!%20Quero%20saber%20mais%20sobre%20a%20m%C3%A1quina%20Vero%20Banrisul" target="_blank" rel="noopener"
@@ -983,6 +1223,242 @@
         nodes.forEach(runOnce);
       }, 2500);
     }
+  })();
+
+  // ---- Simulação → WhatsApp do promotor ----
+  // Nada é salvo nem enviado para servidor: os dados só montam o texto da
+  // mensagem e o visitante é levado ao WhatsApp. O número NÃO fica aqui:
+  // é lido do próprio link wa.me do botão clicado (o mesmo dos demais
+  // botões do site), então continua existindo um único padrão de número.
+  (function () {
+    var dialog = document.getElementById('lead-dialog');
+    var openers = document.querySelectorAll('[data-lead-open]');
+    // Sem suporte a <dialog>: os botões seguem como links normais do WhatsApp.
+    if (!dialog || typeof dialog.showModal !== 'function' || !openers.length) return;
+
+    var form = document.getElementById('lead-form');
+    var done = document.getElementById('lead-done');
+    var doneLink = document.getElementById('lead-done-link');
+    var doneTitle = document.getElementById('lead-done-title');
+    var nome = document.getElementById('lead-nome');
+    var doc = document.getElementById('lead-doc');
+    var fat = document.getElementById('lead-fat');
+    var letrasBtn = document.getElementById('lead-doc-letras');
+    var finePointer = window.matchMedia('(pointer: fine)').matches;
+    var waNumber = '';
+    var lastOpener = null;
+    var submitted = false;
+
+    function numberFrom(href) {
+      var m = /wa\.me\/(\d{10,15})/.exec(href || '');
+      return m ? m[1] : '';
+    }
+
+    // ---------- CPF / CNPJ ----------
+    // CNPJ alfanumérico (Receita Federal, desde jul/2026): as 12 primeiras
+    // posições aceitam 0-9 e A-Z; os 2 dígitos verificadores seguem numéricos.
+    // CNPJs só numéricos continuam válidos — o mesmo cálculo cobre os dois.
+    function clean(v) { return String(v || '').toUpperCase().replace(/[^0-9A-Z]/g, '').slice(0, 14); }
+    function hasLetter(v) { return /[A-Z]/.test(v); }
+
+    function format(raw) {
+      var v = raw;
+      if (v.length <= 11 && !hasLetter(v)) { // CPF 000.000.000-00
+        return v.replace(/^(\d{3})(\d)/, '$1.$2')
+                .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
+                .replace(/\.(\d{3})(\d{1,2})$/, '.$1-$2');
+      }
+      // CNPJ 00.000.000/0000-00
+      var out = v.slice(0, 2);
+      if (v.length > 2)  out += '.' + v.slice(2, 5);
+      if (v.length > 5)  out += '.' + v.slice(5, 8);
+      if (v.length > 8)  out += '/' + v.slice(8, 12);
+      if (v.length > 12) out += '-' + v.slice(12, 14);
+      return out;
+    }
+
+    function cpfValido(c) {
+      if (!/^\d{11}$/.test(c) || /^(\d)\1{10}$/.test(c)) return false;
+      for (var t = 9; t < 11; t++) {
+        var s = 0;
+        for (var i = 0; i < t; i++) s += Number(c[i]) * (t + 1 - i);
+        var d = (s * 10) % 11 % 10;
+        if (d !== Number(c[t])) return false;
+      }
+      return true;
+    }
+
+    function cnpjValido(c) {
+      if (!/^[0-9A-Z]{12}\d{2}$/.test(c) || /^(.)\1{13}$/.test(c)) return false;
+      function dv(base) {
+        var w = base.length === 12 ? [5,4,3,2,9,8,7,6,5,4,3,2] : [6,5,4,3,2,9,8,7,6,5,4,3,2];
+        var s = 0;
+        for (var i = 0; i < base.length; i++) s += (base.charCodeAt(i) - 48) * w[i];
+        var r = s % 11;
+        return r < 2 ? 0 : 11 - r;
+      }
+      var d1 = dv(c.slice(0, 12));
+      var d2 = dv(c.slice(0, 12) + d1);
+      return d1 === Number(c[12]) && d2 === Number(c[13]);
+    }
+
+    // ---------- validação ----------
+    function setError(el, errEl, msg) {
+      var target = el;
+      if (msg) {
+        errEl.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>';
+        errEl.appendChild(document.createTextNode(msg));
+        errEl.hidden = false;
+        target.setAttribute('aria-invalid', 'true');
+        target.classList.remove('is-valid');
+      } else {
+        errEl.textContent = '';
+        errEl.hidden = true;
+        target.removeAttribute('aria-invalid');
+      }
+    }
+
+    function checkNome(show) {
+      var v = nome.value.replace(/\s+/g, ' ').trim();
+      var letras = (v.match(/[A-Za-zÀ-ÖØ-öø-ÿ]/g) || []).length;
+      var msg = '';
+      if (!v) msg = 'Informe seu nome para o Jaime saber com quem está falando.';
+      else if (!/^[A-Za-zÀ-ÖØ-öø-ÿ' .-]+$/.test(v) || letras < 2) msg = 'Digite um nome válido, só com letras.';
+      if (show) setError(nome, document.getElementById('lead-nome-erro'), msg);
+      nome.classList.toggle('is-valid', !msg);
+      return msg ? null : v;
+    }
+
+    function checkDoc(show) {
+      var v = clean(doc.value);
+      var msg = '';
+      if (!v) msg = 'Informe seu CPF ou CNPJ.';
+      else if (v.length < 11 || (v.length > 11 && v.length < 14) || (v.length === 11 && hasLetter(v))) {
+        msg = 'Documento incompleto: o CPF tem 11 números e o CNPJ tem 14 caracteres.';
+      }
+      else if (v.length === 11 && !cpfValido(v)) msg = 'Esse CPF não parece válido. Confira os números digitados.';
+      else if (v.length === 14 && !cnpjValido(v)) msg = 'Esse CNPJ não parece válido. Confira o que foi digitado.';
+      if (show) setError(doc, document.getElementById('lead-doc-erro'), msg);
+      doc.classList.toggle('is-valid', !msg);
+      if (msg) return null;
+      return { tipo: v.length === 11 ? 'CPF' : 'CNPJ', valor: format(v) };
+    }
+
+    function checkFat(show) {
+      var sel = form.querySelector('input[name="faturamento"]:checked');
+      var msg = sel ? '' : 'Escolha uma faixa de faturamento.';
+      if (show) setError(fat, document.getElementById('lead-fat-erro'), msg);
+      return sel ? sel.value : null;
+    }
+
+    // ---------- máscara mantendo a posição do cursor ----------
+    doc.addEventListener('input', function () {
+      var pos = doc.selectionStart == null ? doc.value.length : doc.selectionStart;
+      var before = clean(doc.value.slice(0, pos)).length;
+      var raw = clean(doc.value);
+      var formatted = format(raw);
+      doc.value = formatted;
+      // recoloca o cursor depois do mesmo número de caracteres "úteis"
+      var count = 0, i = 0;
+      while (i < formatted.length && count < before) { if (/[0-9A-Z]/.test(formatted[i])) count++; i++; }
+      try { doc.setSelectionRange(i, i); } catch (e) {}
+      var complete = raw.length === 11 || raw.length === 14;
+      if (submitted || complete || doc.getAttribute('aria-invalid')) checkDoc(submitted || complete);
+      else doc.classList.remove('is-valid');
+    });
+    doc.addEventListener('blur', function () { if (doc.value) checkDoc(true); });
+
+    nome.addEventListener('input', function () {
+      if (submitted || nome.getAttribute('aria-invalid')) checkNome(true); else checkNome(false);
+    });
+    nome.addEventListener('blur', function () { if (nome.value.trim()) checkNome(true); });
+
+    form.addEventListener('change', function (e) {
+      if (e.target && e.target.name === 'faturamento') checkFat(true);
+    });
+
+    if (letrasBtn) {
+      letrasBtn.addEventListener('click', function () {
+        doc.setAttribute('inputmode', 'text');
+        doc.setAttribute('autocapitalize', 'characters');
+        letrasBtn.hidden = true;
+        doc.blur(); doc.focus(); // reabre o teclado já no modo completo
+      });
+    }
+
+    // ---------- abrir / fechar ----------
+    function resetForm() {
+      form.reset();
+      submitted = false;
+      [nome, doc].forEach(function (el) { el.classList.remove('is-valid'); el.removeAttribute('aria-invalid'); });
+      fat.removeAttribute('aria-invalid');
+      ['lead-nome-erro', 'lead-doc-erro', 'lead-fat-erro'].forEach(function (id) {
+        var el = document.getElementById(id); el.textContent = ''; el.hidden = true;
+      });
+      doc.setAttribute('inputmode', 'numeric');
+      doc.removeAttribute('autocapitalize');
+      if (letrasBtn) letrasBtn.hidden = false;
+      doneLink.setAttribute('href', '#'); // não deixa os dados no DOM
+      form.hidden = false;
+      done.hidden = true;
+    }
+
+    function openLead(e) {
+      var n = numberFrom(this.getAttribute('href')) || numberFrom((document.querySelector('a[href*="wa.me/"]') || {}).href);
+      if (!n) return; // sem número configurado: deixa o link seguir normalmente
+      e.preventDefault();
+      waNumber = n;
+      lastOpener = this;
+      resetForm();
+      dialog.showModal();
+      document.documentElement.style.overflow = 'hidden';
+      openers.forEach(function (b) { b.classList.add('is-seen'); });
+      // No celular não abre o teclado sozinho (ele cobriria o formulário).
+      if (finePointer) nome.focus();
+    }
+    openers.forEach(function (b) { b.addEventListener('click', openLead); });
+
+    dialog.addEventListener('close', function () {
+      document.documentElement.style.overflow = '';
+      resetForm();
+      if (lastOpener) { try { lastOpener.focus({ preventScroll: true }); } catch (e) { lastOpener.focus(); } }
+    });
+    dialog.addEventListener('click', function (e) { if (e.target === dialog) dialog.close(); }); // toque no fundo escuro
+    dialog.querySelectorAll('[data-lead-close]').forEach(function (b) {
+      b.addEventListener('click', function () { dialog.close(); });
+    });
+
+    // ---------- envio ----------
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      submitted = true;
+      var n = checkNome(true), d = checkDoc(true), f = checkFat(true);
+      if (!n || !d || !f) {
+        var first = !n ? nome : !d ? doc : fat.querySelector('input');
+        first.focus();
+        return;
+      }
+
+      var msg =
+        'Olá, Jaime! Tudo bem?\n\n' +
+        'Tenho interesse em conhecer melhor as soluções da Vero e gostaria de fazer uma simulação.\n\n' +
+        'Meu nome é ' + n + '.\n' +
+        d.tipo + ': ' + d.valor + '\n' +
+        'Faturamento médio mensal: ' + f + '\n\n' +
+        'Gostaria de saber quais condições e taxas estão disponíveis para o meu negócio.';
+      var url = 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(msg);
+
+      doneLink.setAttribute('href', url);
+      form.hidden = true;
+      done.hidden = false;
+      doneTitle.focus();
+
+      // Nova aba no computador; se o navegador bloquear (comum em apps como
+      // Instagram/Facebook), abre na mesma aba, que leva direto ao app.
+      var w = window.open(url, '_blank');
+      if (w) { try { w.opener = null; } catch (err) {} }
+      else { window.location.href = url; }
+    });
   })();
 </script>
 
