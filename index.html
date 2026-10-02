@@ -269,6 +269,47 @@
     .marquee-track { transform: none !important; }
   }
 
+  /* ============ Taxa no hexágono (topo) ============
+     Estado final é o padrão (sem JS, com reduced-motion ou em leitores
+     de tela já aparece tudo). O JS só adiciona .will-animate e depois
+     .play quando o bloco entra na tela. */
+  .rate-hex-row { margin-top: .75rem; display: flex; flex-direction: column; align-items: flex-start; gap: .9rem; }
+  .rate-hex-shape { position: relative; flex: none; width: 210px; aspect-ratio: 240 / 208; }
+  .rate-hex-shape svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .rate-hex-stroke { fill: none; stroke: #2FD3EE; stroke-width: 3.5; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 0; filter: drop-shadow(0 0 8px rgba(47,211,238,.75)); }
+  .rate-hex-fill { fill: rgba(47,211,238,.10); }
+  .rate-hex-in { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .rate-hex-pre { font-size: .6rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #7DE8FF; margin-bottom: .25rem; }
+  .rate-hex-num { font-weight: 800; line-height: 1; letter-spacing: -.02em; font-size: 3.4rem; color: #fff; text-shadow: 0 0 24px rgba(125,232,255,.45); font-variant-numeric: tabular-nums; }
+  .rate-hex-num span { color: #FFD400; font-size: .5em; vertical-align: top; }
+  .rate-hex-side { font-family: Sora, Inter, system-ui, sans-serif; font-weight: 700; font-size: 1rem; line-height: 1.35; color: #fff; }
+  .rate-hex-side em { font-style: normal; color: #7DE8FF; }
+  .rate-hex-chips { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .5rem; }
+  .rate-hex-chip { display: inline-flex; align-items: center; justify-content: center; height: 50px; min-width: 70px; padding: 0 .625rem; border-radius: .625rem; background: #fff;
+    box-shadow: 0 8px 20px -10px rgba(2,10,40,.6), 0 0 0 1px rgba(47,211,238,.35); }
+  .rate-hex-chip img { height: 42px; width: auto; display: block; }
+  @media (max-width: 639px) {
+    .rate-hex-shape { width: 176px; }
+    .rate-hex-num { font-size: 2.85rem; }
+  }
+  .rate-hex.will-animate .rate-hex-stroke { stroke-dashoffset: 1; }
+  .rate-hex.will-animate .rate-hex-fill { opacity: 0; }
+  .rate-hex.will-animate .rate-hex-in { opacity: 0; transform: scale(.85); }
+  .rate-hex.will-animate .rate-hex-side,
+  .rate-hex.will-animate .rate-hex-chip { opacity: 0; transform: translateY(8px); }
+  .rate-hex.play .rate-hex-stroke { animation: rh-draw 1.3s cubic-bezier(.65,0,.35,1) .3s forwards; }
+  .rate-hex.play .rate-hex-fill { animation: rh-in .6s ease 1.3s forwards; }
+  .rate-hex.play .rate-hex-in { animation: rh-in .6s cubic-bezier(.34,1.56,.64,1) 1.2s forwards; }
+  .rate-hex.play .rate-hex-side { animation: rh-in .5s ease 1.6s forwards; }
+  .rate-hex.play .rate-hex-chip { animation: rh-in .45s cubic-bezier(.34,1.56,.64,1) forwards; }
+  .rate-hex.play .rate-hex-chip:nth-child(1) { animation-delay: 1.75s; }
+  .rate-hex.play .rate-hex-chip:nth-child(2) { animation-delay: 1.9s; }
+  .rate-hex.play .rate-hex-chip:nth-child(3) { animation-delay: 2.05s; }
+  .rate-hex.play .rate-hex-shape svg { animation: rh-glow 3.2s ease-in-out 2.4s infinite; }
+  @keyframes rh-draw { to { stroke-dashoffset: 0; } }
+  @keyframes rh-in { to { opacity: 1; transform: none; } }
+  @keyframes rh-glow { 50% { filter: drop-shadow(0 0 14px rgba(47,211,238,.55)); } }
+
   /* ============ Simulação / lead → WhatsApp ============
      Self-contained styles (lead-*) so they don't depend on Tailwind
      utilities that aren't in the precompiled CSS above. Same tokens as
@@ -497,9 +538,30 @@
       </p>
 
       <div class="mt-8">
-        <p class="rate-label">Banricompras por apenas</p>
-        <p class="font-display rate-glow text-6xl sm:text-7xl font-extrabold leading-none mt-1"><span class="count-up" data-target="0.99" data-decimals="2">0,00</span><span class="count-suffix"><span class="text-3xl align-top">%</span><span class="text-lg align-top">*</span></span></p>
-        <p class="mt-2 text-xs text-cyan-100/70">*Taxa válida nos 3 primeiros meses a partir da contratação.</p>
+        <!-- Taxa em destaque: hexágono que se desenha + bandeiras (anima só com JS; sem JS já aparece pronto) -->
+        <div class="rate-hex">
+          <p class="rate-label">Taxa especial</p>
+          <div class="rate-hex-row">
+            <div class="rate-hex-shape">
+              <svg viewBox="0 0 240 208" aria-hidden="true" focusable="false">
+                <path class="rate-hex-fill" d="M64 6h112l58 98-58 98H64L6 104z"/>
+                <path class="rate-hex-stroke" pathLength="1" d="M64 6h112l58 98-58 98H64L6 104z"/>
+              </svg>
+              <div class="rate-hex-in">
+                <p class="rate-hex-pre">por apenas</p>
+                <p class="rate-hex-num font-display">0,99<span>%</span></p>
+              </div>
+            </div>
+            <div>
+              <p class="rate-hex-side">Para <em>Banricompras, Visa e Mastercard</em></p>
+              <div class="rate-hex-chips">
+                <span class="rate-hex-chip"><img src="assets/flags/banricompras-logo.webp" alt="" width="102" height="96" decoding="async"></span>
+                <span class="rate-hex-chip"><img src="assets/flags/visa-logo.webp" alt="" width="180" height="96" decoding="async"></span>
+                <span class="rate-hex-chip"><img src="assets/flags/mastercard-logo.webp" alt="" width="124" height="96" decoding="async"></span>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div class="mt-5 lead-cta-row">
         <!-- Abre o formulário de simulação. Sem JS, cai no link normal do WhatsApp. -->
@@ -1223,6 +1285,19 @@
         nodes.forEach(runOnce);
       }, 2500);
     }
+  })();
+
+  // ---- Taxa no hexágono: anima quando o bloco entra na tela ----
+  (function () {
+    var el = document.querySelector('.rate-hex');
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+    el.classList.add('will-animate');
+    function go() { el.classList.add('play'); }
+    var io = new IntersectionObserver(function (es) {
+      if (es[0].isIntersecting) { go(); io.disconnect(); }
+    }, { threshold: 0.3 });
+    io.observe(el);
+    window.setTimeout(go, 3000); // rede de segurança: nunca fica escondido
   })();
 
   // ---- Simulação → WhatsApp do promotor ----
